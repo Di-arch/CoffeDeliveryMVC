@@ -1,0 +1,89 @@
+﻿@model IEnumerable<CoffeDelivery.Models.Order>
+@using Microsoft.Extensions.Configuration
+
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "View";
+}
+<h1>Заказы на приготовление</h1>
+<table class="table">
+    <thead>
+        <tr>
+             
+            <th>
+                @Html.DisplayNameFor(model => model.DishId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CookerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeOrderPlaced)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeOrderCooked)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (string.IsNullOrWhiteSpace(item.CookerId) || item.CookerId.Equals(User.Identity.Name))
+            {
+                <tr>
+                     
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DishId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CookerId)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateTimeOrderPlaced)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateTimeOrderCooked)
+                    </td>
+
+                    <td>
+                        @if (string.IsNullOrWhiteSpace(item.CookerId))
+                        {
+                            @using (Html.BeginForm("StartCooking", "Home", new { id = item.Id }, FormMethod.Post))
+                            {
+                                <button class="btn btn-secondary">Взять заказ</button>
+                            }
+                        }
+                        else
+                        {
+                            @using (Html.BeginForm("FinishCooking", "Home", new { id = item.Id }, FormMethod.Post))
+                            {
+                                <button class="btn btn-primary">Заказ готов</button>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/coffeDeliveryHub").build();
+    connection
+        .start()
+        .catch(() => {
+            alert("Error while establishing connection");
+        });
+    connection.on("@Configuration["RabbitMq:OrdersChangedMsg"]", function () {
+        window.location.reload();
+    });
+</script>
+

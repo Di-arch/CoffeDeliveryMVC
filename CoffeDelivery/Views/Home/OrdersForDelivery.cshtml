@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CoffeDelivery.Models.Order>
+@using Microsoft.Extensions.Configuration
+
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "OrdersForDelivery";
+}
+
+<h1>Заказы для доставки</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DishId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CookerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourierId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeOrderPlaced)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeOrderCooked)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeOrderDelivered)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DishId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CookerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourierId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeOrderPlaced)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeOrderCooked)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeOrderDelivered)
+            </td>
+            <td>
+                @using (Html.BeginForm("AcceptOrderForDelivery", "Home", new { id = item.Id }, FormMethod.Post))
+                {
+                    <button class="btn btn-secondary"> Принять заказ</button>
+                }
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>

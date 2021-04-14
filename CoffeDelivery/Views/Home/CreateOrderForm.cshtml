@@ -1,0 +1,57 @@
+﻿@model CoffeDelivery.Models.Order
+@using CoffeDelivery.Data;
+@{
+    ViewData["Title"] = "CreateOrderForm";
+    Dish dish = (Dish)ViewBag.Dish;
+    ViewBag.NewDish = dish;
+}
+
+<h2>Ваш заказ @dish.Name</h2>
+<hr />
+<h3>Цена @dish.Price</h3>
+<p>@dish.Description</p>
+<img src="@dish.PictureUrl" width="400" height="400" /> 
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateOrder" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="DishId" id="priceInp" class="form-control" value="@dish.Id" hidden="hidden" />
+            
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" min="1" value="1" id="qtyInp" type="number" oninput="CalculateSum()" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <label id="sumLbl">Сумма: @dish.Price тг. </label>
+            <div class="form-group">
+                <input type="submit" value="Заказать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="DishesList">Back to List</a>
+</div>
+@section Scripts{ 
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+        function CalculateSum() {
+            var qty = document.getElementById("qtyInp").value
+            if (qty<1) {
+                document.getElementById("qtyInp").value=1
+            }
+            else {
+                document.getElementById("sumLbl").textContent="Сумма: "+(@dish.Price * qty)+" тг."
+            }
+        }
+</script>
+}
+
+
+
+
